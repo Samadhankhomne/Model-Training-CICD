@@ -13,9 +13,14 @@ sns.set(style='white')
 # Load Data
 dataset = pd.read_csv('iris.csv')
 
-# Feature names (Ensure no extra spaces or parentheses)
-dataset.columns = [colname.strip(' (cm)').replace("", "_") for colname in dataset.columns.tolist()]
-features_names = dataset.columns.tolist()[:4]
+# Clean column names
+dataset.columns = dataset.columns.str.strip().str.lower().str.replace(" ", "_")
+
+# Ensure required columns are present
+required_columns = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
+for col in required_columns:
+    if col not in dataset.columns:
+        raise ValueError(f"Column '{col}' is missing in the dataset.")
 
 # Feature Engineering
 dataset['sepal_length_width_ratio'] = dataset['sepal_length'] / dataset['sepal_width']
